@@ -21,7 +21,10 @@ COPY . .
 RUN pip install --no-cache-dir -e .
 
 # Train the model before running the application
-RUN python pipeline/training_pipeline.py
+RUN --mount=type=secret,id=gcp_credentials,target=/run/secrets/gcp.json \
+    GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/gcp.json \
+    python pipeline/training_pipeline.py
+
 
 # Expose the port that Flask will run on
 EXPOSE 5000
